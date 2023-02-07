@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="192" id="Bdn-aM-kr5">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="192" id="Bdn-aM-kr5" customClass="RestaurantCell" customModule="Yelpy" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="50" width="414" height="192"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Bdn-aM-kr5" id="daX-7x-COn">
@@ -41,6 +41,10 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="label" destination="1Eo-7o-6Da" id="fvH-9s-IDy"/>
+                                            <outlet property="restaurantView" destination="1yd-gl-TEw" id="RsK-B3-iTO"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
