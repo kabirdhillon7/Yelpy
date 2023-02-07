@@ -8,20 +8,15 @@
 
 import Foundation
 
-
 struct API {
-    
-
     
     static func getRestaurants(completion: @escaping ([[String:Any]]?) -> Void) {
         
-        // ––––– TODO: Add your own API key!
-        let apikey = ""
+        let apikey = "vbab2aFpu-nIMPDd22GSEZB2NIdnmvs2lvhEyCz_T6WvgIVr6EKNLs9rNYFUPlAxEBgOlDbkrKcg27HWKcqrh3BMECDlv6j30kLCPSxfmpoFg1ibX5_6m8BWL5mSY3Yx"
         
         // Coordinates for San Francisco
         let lat = 37.773972
         let long = -122.431297
-        
         
         let url = URL(string: "https://api.yelp.com/v3/transactions/delivery/search?latitude=\(lat)&longitude=\(long)")!
         
@@ -36,21 +31,17 @@ struct API {
             if let error = error {
                 print(error.localizedDescription)
             } else if let data = data {
-                
-        
-
-                // ––––– TODO: Get data from API and return it using completion
-                
-                
-                
-                return completion([[:]])
-                
-                }
+                print(data)
+                // 1. Convert json response to a dictionary
+                let dataDictionary = try! JSONSerialization.jsonObject (with: data, options: []) as! [String: Any]
+                // 2. Grab the businesses data and convert it to an array of dictionaries for each restaurant
+                let restaurants = dataDictionary["businesses"] as! [[String: Any]]
+                // 3. completion is an escaping method which allows the data to be used outside of the closure
+                return completion (restaurants)
             }
-        
-            task.resume()
-        
         }
+        task.resume()
     }
+}
 
-    
+
