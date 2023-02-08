@@ -9,8 +9,8 @@
 import UIKit
 import AlamofireImage
 
-class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+class RestaurantsViewController: UIViewController {
+    
     @IBOutlet weak var tableView: UITableView!
     
     // ––––– TODO: Build Restaurant Class
@@ -21,7 +21,7 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         getAPIData()
@@ -39,14 +39,24 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    // Protocol Stubs
-    // How many cells there will be
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell
+        
+        if let indexPath = tableView.indexPath(for: cell) {
+            let r = restaurantsArray[indexPath.row]
+            let detailViewController = segue.destination as! RestaurantDetailViewController
+            detailViewController.r = r
+        }
+    }
+    
+}
+extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return restaurantsArray.count
     }
     
 
-    // ––––– TODO: Configure cell using MVC
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Create Restaurant Cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "RestaurantCell") as! RestaurantCell
@@ -58,11 +68,6 @@ class RestaurantsViewController: UIViewController, UITableViewDelegate, UITableV
         
         return cell
     }
-    
-    // –––––– TODO: Override segue to pass the restaurant object to the DetailsViewController
-
-    
-
 }
 
 
