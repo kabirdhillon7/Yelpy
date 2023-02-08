@@ -22,8 +22,7 @@ class RestaurantsViewController: UIViewController {
     
     let yelpyRefresh = UIRefreshControl()
     
-    
-    // –––––  Lab 4: create an animation view
+    var animationView: AnimationView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,14 +39,20 @@ class RestaurantsViewController: UIViewController {
         // Get Data from API
         getAPIData()
         
+        // Refresh Controll
         yelpyRefresh.addTarget(self, action: #selector(getAPIData), for: .valueChanged)
         tableView.refreshControl = yelpyRefresh
         
         
-        // –––––  Lab 4: stop animations, you can add a timer to stop the animation
+        // Animations
+        animationView = .init(name: "animationName")
+        animationView?.frame = view.bounds
+        animationView?.play()
+        
+        startAnimations()
+        stopAnimations()
         
     }
-    
     
     @objc func getAPIData() {
         API.getRestaurants() { (restaurants) in
@@ -62,14 +67,30 @@ class RestaurantsViewController: UIViewController {
         }
     }
     
-    
     // ––––– Lab 4 TODO: Call animation functions to start
-    
+    func startAnimations() {
+        animationView = .init (name: "4762-food-carousel")
+        // - 1. Set the size to the frame
+        animationView!.frame = view.bounds
+        animationView!.frame = CGRect(x: view.frame.width / 3 , y: 0, width: 100, height: 100)
+        // fit the animation
+        animationView!.contentMode = .scaleAspectFit
+        view.addSubview (animationView!)
+        //- 2. Set animation loop mode
+        animationView!.loopMode = .loop
+        // 3. Animation speed - Larger number = faste
+        animationView!.animationSpeed = 5
+        // 4. Play animation
+        animationView!.play()
+    }
     
     // ––––– Lab 4 TODO: Call animation functions to stop
-    
-    
-    
+    @objc func stopAnimations() {
+        // 1. Stop Animation
+        animationView?.stop()
+        //2. Change the subview to last and remove the current subview
+        view.subviews.last?.removeFromSuperview()
+    }
 }
 
 // ––––– TableView Functionality –––––
@@ -93,6 +114,12 @@ extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource 
             let r = filteredRestaurants[indexPath.row]
             let detailViewController = segue.destination as! RestaurantDetailViewController
             detailViewController.r = r
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath:IndexPath) {
+        if indexPath.row + 1 == self.restaurantsArray.count {
+            getAPIData()
         }
     }
 }
@@ -126,7 +153,6 @@ extension RestaurantsViewController: UISearchBarDelegate {
         filteredRestaurants = restaurantsArray // reset results to display
         tableView.reloadData()
     }
-    
 }
 
 
