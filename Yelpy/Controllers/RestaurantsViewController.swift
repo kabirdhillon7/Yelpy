@@ -13,11 +13,12 @@ class RestaurantsViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-
+    
     var restaurantsArray: [Restaurant] = []
-    var filteredRestaurants: [Restaurant]!
+    var filteredRestaurants: [Restaurant] = []
     
     var searchActive : Bool = false
+    let yelpyRefresh = UIRefreshControl()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,15 +30,21 @@ class RestaurantsViewController: UIViewController {
         filteredRestaurants = restaurantsArray
         
         getAPIData()
+        
+        yelpyRefresh.addTarget(self, action: #selector(getAPIData), for: .valueChanged)
+        tableView.refreshControl = yelpyRefresh
     }
     
-    func getAPIData() {
+    @objc func getAPIData() {
         API.getRestaurants() { (restaurants) in
             guard let restaurants = restaurants else {
                 return
             }
             self.restaurantsArray = restaurants
+            self.filteredRestaurants = restaurants
             self.tableView.reloadData()
+            
+            self.yelpyRefresh.endRefreshing()
         }
     }
     
@@ -50,7 +57,6 @@ class RestaurantsViewController: UIViewController {
             detailViewController.r = r
         }
     }
-    
 }
 extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -76,6 +82,13 @@ extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource 
         cell.r = restaurant
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath:IndexPath) {
+        
+        if indexPath.row + 1 == self.restaurantsArray.count {
+            getAPIData()
+        }
     }
 }
 
