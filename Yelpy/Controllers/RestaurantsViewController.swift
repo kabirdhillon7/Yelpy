@@ -12,23 +12,25 @@ import AlamofireImage
 class RestaurantsViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
-    
-    // ––––– TODO: Build Restaurant Class
-    
-    // –––––– TODO: Update restaurants Array to an array of Restaurants
+    @IBOutlet weak var searchBar: UISearchBar!
+
     var restaurantsArray: [Restaurant] = []
+    var filteredRestaurants: [Restaurant]!
     
+    var searchActive : Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        searchBar.delegate = self
+        filteredRestaurants = restaurantsArray
+        
         getAPIData()
     }
     
-    
-    // ––––– TODO: Update API to get an array of restaurant objects
     func getAPIData() {
         API.getRestaurants() { (restaurants) in
             guard let restaurants = restaurants else {
@@ -53,21 +55,65 @@ class RestaurantsViewController: UIViewController {
 extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (searchActive) {
+            return filteredRestaurants.count
+        }
         return restaurantsArray.count
     }
     
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Create Restaurant Cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "RestaurantCell") as! RestaurantCell
         
-        let restaurant = restaurantsArray[indexPath.row]
+        let restaurant: Restaurant
+        if (searchActive){
+            restaurant = filteredRestaurants[indexPath.row]
+        } else {
+            restaurant = restaurantsArray[indexPath.row]
+        }
         
-        // Set name and phone of cell label
         cell.r = restaurant
         
         return cell
     }
 }
 
-
+extension RestaurantsViewController: UISearchBarDelegate {
+    
+    // This method updates filteredData based on the text in the Search Box
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        // When there is no text, filteredData is the same as the original data
+        // When user has entered text into the search box
+        // Use the filter method to iterate over all items in the data array
+        // For each item, return true if the item should be included and false if the
+        // item should NOT be included
+        filteredRestaurants = searchText.isEmpty ? restaurantsArray : restaurantsArray.filter { (item: Restaurant) -> Bool in
+            return item.name.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        }
+        tableView.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActive = true;
+        searchBar.showsCancelButton = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchActive = true;
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchActive = false;
+        self.filteredRestaurants = restaurantsArray
+        self.tableView.reloadData()
+    }
+    
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+        searchBar.resignFirstResponder()
+    }
+}
