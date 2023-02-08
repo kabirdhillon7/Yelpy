@@ -11,10 +11,11 @@ import Foundation
 
 struct API {
     
+
     static func getRestaurants(completion: @escaping ([Restaurant]?) -> Void) {
         
         // ––––– TODO: Add your own API key!
-        let apikey = "vbab2aFpu-nIMPDd22GSEZB2NIdnmvs2lvhEyCz_T6WvgIVr6EKNLs9rNYFUPlAxEBgOlDbkrKcg27HWKcqrh3BMECDlv6j30kLCPSxfmpoFg1ibX5_6m8BWL5mSY3Yx"
+        let apikey = "gjSp5LrrEi9tJFLQALnw-RdZSRy-TLiJsfPM09LzFMNpMnmSHQZ2n2R_f3ptONYEalxMIudE9avxn_bQvvDZJc1zpPdfPDOvdh08RlT8vZGbqFx3dbtkuliMwATHXnYx"
         
         // Coordinates for San Francisco
         let lat = 37.773972
@@ -25,7 +26,6 @@ struct API {
         
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         
-        // Insert API Key to request
         request.setValue("Bearer \(apikey)", forHTTPHeaderField: "Authorization")
         
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -35,24 +35,21 @@ struct API {
                 print(error.localizedDescription)
             } else if let data = data {
                 
-        
-
                 // ––––– TODO: Get data from API and return it using completion
-                
                 let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                
+                let restDict = dataDictionary["businesses"] as! [[String: Any]]
+                
+                let restaurants = restDict.map({ Restaurant.init(dict: $0) })
+                
+                // Using For Loop
+//                var restaurants: [Restaurant] = []
+//                for dictionary in dataDictionary {
+//                    let restaurant = Restaurant.init(dict: dictionary as! [String : Any])
+//                    restaurants.append(restaurant)
+//                }
 
-                // Get array of restaurant dictionaries
-                let restDictionaries = dataDictionary["businesses"] as! [[String: Any]]
-
-                // Variable to store array of Restaurants
-                var restaurants: [Restaurant] = []
-
-                // Use each restaurant dictionary to initialize Restaurant object
-                for dictionary in restDictionaries {
-                    let restaurant = Restaurant.init(dict: dictionary)
-                    restaurants.append(restaurant) // add to restaurants array
-                }
-
+                                
                 return completion(restaurants)
                 
                 }
@@ -61,6 +58,10 @@ struct API {
             task.resume()
         
         }
-    }
+    
+    
+
+    
+}
 
     

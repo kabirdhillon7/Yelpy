@@ -8,32 +8,46 @@
 
 import UIKit
 import AlamofireImage
+import Lottie
+import SkeletonView
 
 class RestaurantsViewController: UIViewController {
     
+    // Outlets
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-    
+    // Initiliazers
     var restaurantsArray: [Restaurant] = []
     var filteredRestaurants: [Restaurant] = []
     
-    var searchActive : Bool = false
     let yelpyRefresh = UIRefreshControl()
+    
+    
+    // –––––  Lab 4: create an animation view
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // ––––– Lab 4 TODO: Start animations
         
+        
+        // Table View
         tableView.delegate = self
         tableView.dataSource = self
         
+        // Search Bar delegate
         searchBar.delegate = self
-        filteredRestaurants = restaurantsArray
         
+        // Get Data from API
         getAPIData()
         
         yelpyRefresh.addTarget(self, action: #selector(getAPIData), for: .valueChanged)
         tableView.refreshControl = yelpyRefresh
+        
+        
+        // –––––  Lab 4: stop animations, you can add a timer to stop the animation
+        
     }
+    
     
     @objc func getAPIData() {
         API.getRestaurants() { (restaurants) in
@@ -48,85 +62,74 @@ class RestaurantsViewController: UIViewController {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let cell = sender as! UITableViewCell
-        
-        if let indexPath = tableView.indexPath(for: cell) {
-            let r = restaurantsArray[indexPath.row]
-            let detailViewController = segue.destination as! RestaurantDetailViewController
-            detailViewController.r = r
-        }
-    }
+    
+    // ––––– Lab 4 TODO: Call animation functions to start
+    
+    
+    // ––––– Lab 4 TODO: Call animation functions to stop
+    
+    
+    
 }
+
+// ––––– TableView Functionality –––––
 extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (searchActive) {
-            return filteredRestaurants.count
-        }
-        return restaurantsArray.count
+        return filteredRestaurants.count
     }
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Create Restaurant Cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "RestaurantCell") as! RestaurantCell
-        
-        let restaurant: Restaurant
-        if (searchActive){
-            restaurant = filteredRestaurants[indexPath.row]
-        } else {
-            restaurant = restaurantsArray[indexPath.row]
-        }
-        
-        cell.r = restaurant
-        
+        // Set cell's restaurant
+        cell.r = filteredRestaurants[indexPath.row]
         return cell
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath:IndexPath) {
-        
-        if indexPath.row + 1 == self.restaurantsArray.count {
-            getAPIData()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell
+        if let indexPath = tableView.indexPath(for: cell) {
+            let r = filteredRestaurants[indexPath.row]
+            let detailViewController = segue.destination as! RestaurantDetailViewController
+            detailViewController.r = r
         }
     }
 }
 
 extension RestaurantsViewController: UISearchBarDelegate {
     
-    // This method updates filteredData based on the text in the Search Box
+    // Search bar functionality
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        // When there is no text, filteredData is the same as the original data
-        // When user has entered text into the search box
-        // Use the filter method to iterate over all items in the data array
-        // For each item, return true if the item should be included and false if the
-        // item should NOT be included
-        filteredRestaurants = searchText.isEmpty ? restaurantsArray : restaurantsArray.filter { (item: Restaurant) -> Bool in
-            return item.name.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        if searchText != "" {
+            filteredRestaurants = restaurantsArray.filter { (r: Restaurant) -> Bool in
+                return r.name.lowercased().contains(searchText.lowercased())
+            }
+        }
+        else {
+            filteredRestaurants = restaurantsArray
         }
         tableView.reloadData()
     }
     
+    
+    // Show Cancel button when typing
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchActive = true;
-        searchBar.showsCancelButton = true
+        self.searchBar.showsCancelButton = true
     }
     
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        searchActive = true;
-    }
-    
+    // Logic for searchBar cancel button
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        searchBar.showsCancelButton = false
-        searchBar.text = ""
-        searchActive = false;
-        self.filteredRestaurants = restaurantsArray
-        self.tableView.reloadData()
+        searchBar.showsCancelButton = false // remove cancel button
+        searchBar.text = "" // reset search text
+        searchBar.resignFirstResponder() // remove keyboard
+        filteredRestaurants = restaurantsArray // reset results to display
+        tableView.reloadData()
     }
     
-    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        searchActive = false;
-        searchBar.resignFirstResponder()
-    }
 }
+
+
+
+
+
