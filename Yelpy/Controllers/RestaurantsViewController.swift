@@ -24,10 +24,11 @@ class RestaurantsViewController: UIViewController {
     
     var animationView: AnimationView?
     
+    var refresh = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // ––––– Lab 4 TODO: Start animations
-        
+        startAnimations()
         
         // Table View
         tableView.delegate = self
@@ -49,9 +50,8 @@ class RestaurantsViewController: UIViewController {
         animationView?.frame = view.bounds
         animationView?.play()
         
-        startAnimations()
-        stopAnimations()
         
+        stopAnimations()
     }
     
     @objc func getAPIData() {
@@ -67,7 +67,15 @@ class RestaurantsViewController: UIViewController {
         }
     }
     
-    // ––––– Lab 4 TODO: Call animation functions to start
+    
+}
+
+// ––––– TableView Functionality –––––
+extension RestaurantsViewController: SkeletonTableViewDataSource {
+    func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        return "RestaurantCell"
+    }
+    
     func startAnimations() {
         animationView = .init (name: "4762-food-carousel")
         // - 1. Set the size to the frame
@@ -84,16 +92,15 @@ class RestaurantsViewController: UIViewController {
         animationView!.play()
     }
     
-    // ––––– Lab 4 TODO: Call animation functions to stop
     @objc func stopAnimations() {
         // 1. Stop Animation
         animationView?.stop()
         //2. Change the subview to last and remove the current subview
         view.subviews.last?.removeFromSuperview()
+        refresh = false
     }
 }
 
-// ––––– TableView Functionality –––––
 extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -105,6 +112,12 @@ extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource 
         let cell = tableView.dequeueReusableCell(withIdentifier: "RestaurantCell") as! RestaurantCell
         // Set cell's restaurant
         cell.r = filteredRestaurants[indexPath.row]
+        
+        if self.refresh {
+            cell.showAnimatedSkeleton()
+        } else {
+            cell.hideSkeleton()
+        }
         return cell
     }
     
