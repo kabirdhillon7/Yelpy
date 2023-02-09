@@ -8,13 +8,10 @@
 
 import Foundation
 import UIKit
-
-// Lab 6: TODO: add MapKit framework --> import MapKit
-
+import MapKit
 
 class Restaurant {
     
-
     var imageURL: URL?
     var url: URL?
     var name: String
@@ -23,11 +20,8 @@ class Restaurant {
     var rating: Double
     var reviews: Int
     
-    
-    // MARK: Lab 6:  Refactor Restaurant Model
     var coordinates: [String:Double]!
     
-
     init(dict: [String: Any]) {
         imageURL = URL(string: dict["image_url"] as! String)
         name = dict["name"] as! String
@@ -37,8 +31,7 @@ class Restaurant {
         url = URL(string: dict["url"] as! String)
         mainCategory = Restaurant.getMainCategory(dict: dict)
         
-        // LAB 6
-        coordinates = dict["coordinates"] as! [String:Double]
+        coordinates = (dict["coordinates"] as! [String:Double])
     }
     
     // Helper function to get First category from restaurant
@@ -46,6 +39,4 @@ class Restaurant {
         let categories = dict["categories"] as! [[String: Any]]
         return categories[0]["title"] as! String
     }
-
-    
 }

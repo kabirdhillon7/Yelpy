@@ -13,19 +13,11 @@ import Parse
 
 class ChatViewController: UIViewController {
 
-    
-    /*------ Outlets + Variables ------*/
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var tableView: UITableView!
     
-    
-    
-    // ––––– LAB 5 TODO: CREATE ARRAY FOR MESSAGES
     var messages: [PFObject] = []
-    
-    // ––––– LAB 5 TODO: CREATE CHAT MESSAGE OBJECT
     let chatMessage = PFObject(className: "Message")
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,11 +34,7 @@ class ChatViewController: UIViewController {
         tableView.reloadData()
     }
     
-    
-    
-    /*------  Message Functionality ------*/
-    
-    // ––––– Lab 5 TODO: ADD FUNCTIONALITY TO retrieveChatMessages()
+    // Message Functionality
     @objc func retrieveChatMessages() {
         // ParseClass.TrainingFall2020 is a string from our Constants.swift file
         let query = PFQuery(className: "TrainingFall2020") // className = group chat name, obtained from Constants.swift
@@ -64,9 +52,7 @@ class ChatViewController: UIViewController {
         }
     }
     
-    
-    //  ––––– Lab 5 TODO: SEND MESSAGE TO SERVER AFTER onSend IS CLICKED
-    @IBAction func onSend(_ sender: Any) {
+        @IBAction func onSend(_ sender: Any) {
         // ParseClass.TrainingFall2020 is a string from our Constants.swift file
         if messageTextField.text!.isEmpty == false {
             let chatMessage = PFObject(className: "TrainingFall2020") // className = group chat, Obtained from Constants.swift
@@ -86,36 +72,24 @@ class ChatViewController: UIViewController {
         }
     }
     
-    
-    
-    //  ––––– Lab 5 TODO: Logout
+    // Logout
     @IBAction func onLogout(_ sender: Any) {
         NotificationCenter.default.post(name: NSNotification.Name("didLogout"), object: nil)
     }
     
-    
-    /*------ Dismiss Keyboard and Logout ------*/
+    // Dismisses Keyboard and Logout
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
-
-
 }
-
-
-/*------ TableView Extension Functions ------*/
 
 extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
     
-    
-    
-    // BONUS: IMPLEMENT CELL DIDSET
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
         
@@ -128,20 +102,9 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             cell.usernameLabel.text = "?"
         }
-        
-        // BONUS: ADD avatarImage TO CELL STORYBOARD AND CONNECT TO ChatCell
-//        let baseURL = "https://api.adorable.io/avatars/"
-//        let imageSize = 20
-//        let avatarURL = URL(string: baseURL+"\(imageSize)/\(identifier).png")
-//        cell.avatarImage.af_setImage(withURL: avatarURL!)
-//        cell.avatarImage.layer.cornerRadius = cell.avatarImage.frame.height / 2
-//        cell.avatarImage.clipsToBounds = true
-    
 
         return cell
     }
-    
-    
 }
 
 

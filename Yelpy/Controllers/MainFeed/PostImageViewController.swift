@@ -19,16 +19,13 @@ class PostImageViewController: UIViewController, UIImagePickerControllerDelegate
     
     @IBOutlet weak var selectedImageView: UIImageView!
     
-    // MARK: LAB 6 TODO: Add delegate for the protocol you created
     weak var delegate: PostImageViewControllerDelegate!
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         createImagePicker()
         navigationController?.navigationBar.isHidden = true
-        
     }
     
     // Unwind back to Restaurant Detail after uploading image
