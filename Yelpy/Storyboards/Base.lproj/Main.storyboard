@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -329,7 +330,7 @@
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lv2-5b-WOD">
                                         <rect key="frame" x="309" y="0.0" width="73" height="30"/>
-                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
+                                        <color key="backgroundColor" name="Color"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="6iO-a5-oAh"/>
                                         </constraints>
@@ -452,7 +453,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="10z-wJ-0CI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2218.840579710145" y="470.75892857142856"/>
+            <point key="canvasLocation" x="2251" y="471"/>
         </scene>
         <!--LoginViewController-->
         <scene sceneID="hiu-fo-EuV">
@@ -502,7 +503,7 @@
                                                 <rect key="frame" x="0.0" y="0.0" width="167" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
                                                 <state key="normal" title="Sign Up">
-                                                    <color key="titleColor" systemColor="systemOrangeColor"/>
+                                                    <color key="titleColor" name="Color"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="onSignUp:" destination="fvx-Rj-UzU" eventType="touchUpInside" id="TFH-z3-Q21"/>
@@ -574,11 +575,11 @@
     <resources>
         <image name="house" catalog="system" width="128" height="104"/>
         <image name="message" catalog="system" width="128" height="116"/>
+        <namedColor name="Color">
+            <color red="0.85098039215686272" green="0.015686274509803921" blue="0.16078431372549021" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemOrangeColor">
-            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="viewFlipsideBackgroundColor">
             <color red="0.1215686274509804" green="0.12941176470588239" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
