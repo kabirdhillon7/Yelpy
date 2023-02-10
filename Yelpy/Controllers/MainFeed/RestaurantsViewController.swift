@@ -50,7 +50,7 @@ class RestaurantsViewController: UIViewController {
     
     @objc func getAPIData() {
        
-        API.getRestaurants() { (restaurants) in
+        APICaller.getRestaurants() { (restaurants) in
             guard let restaurants = restaurants else {
                 return
             }
