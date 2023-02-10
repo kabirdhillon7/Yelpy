@@ -14,8 +14,13 @@ Yelpy is an iOS app that allows user to browse restaurants from the [Yelp Fusion
 ## Description
 
 Some of the main features include:
-
-
+- [x] User can view restaurants nearby them using their location.
+- [x] User can tap a cell to see more details about a particular restaurant which also presents the restaurant's address in a MKMapView.
+- [x] User can load past restaurants infinitely using a UIRefreshControl
+- [x] Users can search for restaurants using a search bar
+- [x] Presents an animations using Lottie and Skeleton View when restaurants are loading
+- [x] Users are able to create an account and login to use a Parse backend chat
+- [x] Users are able to take/upload a photo to a restaurant's map pin
 
 ## Requirements
 
@@ -67,6 +72,7 @@ This app uses the following dependencies:
 
 - [Alamofire](https://github.com/Alamofire/Alamofire) (MIT License)
 - [Alamofire Image](https://github.com/Alamofire/AlamofireImage) (MIT License)
+- [Core Location](https://developer.apple.com/documentation/corelocation)
 - [MapKit](https://developer.apple.com/documentation/mapkit/)
 - [Lottie](https://github.com/airbnb/lottie) (MIT License)
 - [Parse](https://github.com/parse-community/Parse-SDK-iOS-OSX) (Parse Community Software License Agreement v1.0)
