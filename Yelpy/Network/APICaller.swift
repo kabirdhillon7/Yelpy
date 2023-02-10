@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 enum API: String {
     case key = "gjSp5LrrEi9tJFLQALnw-RdZSRy-TLiJsfPM09LzFMNpMnmSHQZ2n2R_f3ptONYEalxMIudE9avxn_bQvvDZJc1zpPdfPDOvdh08RlT8vZGbqFx3dbtkuliMwATHXnYx"
@@ -14,13 +15,12 @@ enum API: String {
 
 struct APICaller {
     
-    static func getRestaurants(completion: @escaping ([Restaurant]?) -> Void) {
+    static func getRestaurants(location: CLLocation, completion: @escaping ([Restaurant]?) -> Void) {
         
         let apikey = API.key.rawValue
         
-        // Coordinates for San Francisco
-        let lat = 37.773972
-        let long = -122.431297
+        let lat = location.coordinate.latitude
+        let long = location.coordinate.longitude
         
         guard let url = URL(string: "https://api.yelp.com/v3/transactions/delivery/search?latitude=\(lat)&longitude=\(long)") else {
             print("Unable to get url with latitude: \(lat) and longitude: \(long)")

@@ -10,23 +10,24 @@ import UIKit
 import AlamofireImage
 import Lottie
 import SkeletonView
+import CoreLocation
 
 class RestaurantsViewController: UIViewController {
-        
-    // Outlets
+    
     @IBOutlet weak var tableView: UITableView!
     var restaurantsArray: [Restaurant] = []
     
     @IBOutlet weak var searchBar: UISearchBar!
     var filteredRestaurants: [Restaurant] = []
     
-    // Variable inits
     var animationView: AnimationView?
-    var refresh = true
     
+    var refresh = true
     let yelpRefresh = UIRefreshControl()
     
-
+    var locationManager: CLLocationManager!
+    @Published var location: CLLocation?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,19 +39,21 @@ class RestaurantsViewController: UIViewController {
         
         // Search Bar delegate
         searchBar.delegate = self
-    
-    
-        // Get Data from API
-        getAPIData()
         
+        // Location
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestLocation()
+        locationManager.requestAlwaysAuthorization()
+        
+        // Resfresh Control
         yelpRefresh.addTarget(self, action: #selector(getAPIData), for: .valueChanged)
         tableView.refreshControl = yelpRefresh
     }
     
-    
-    @objc func getAPIData() {
-       
-        APICaller.getRestaurants() { (restaurants) in
+    @objc func getAPIData(currLocation: CLLocation) {
+        print(currLocation)
+        APICaller.getRestaurants(location: currLocation) { (restaurants) in
             guard let restaurants = restaurants else {
                 return
             }
@@ -59,24 +62,14 @@ class RestaurantsViewController: UIViewController {
             self.filteredRestaurants = restaurants
             self.tableView.reloadData()
             
-            // MARK: LAB6 Checking for coordinates
-//            for rest in self.restaurantsArray {
-//                 print("COORDINATES", rest.coordinates)
-//             }
-            
             Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.stopAnimations), userInfo: nil, repeats: false)
-        
-            self.yelpRefresh.endRefreshing()
             
+            self.yelpRefresh.endRefreshing()
         }
     }
-    
-    
-
 }
 
 extension RestaurantsViewController: SkeletonTableViewDataSource {
-    
     
     func startAnimations() {
         // Start Skeleton
@@ -86,23 +79,21 @@ extension RestaurantsViewController: SkeletonTableViewDataSource {
         // Set the size to the frame
         //animationView!.frame = view.bounds
         animationView!.frame = CGRect(x: view.frame.width / 3 , y: 156, width: 100, height: 100)
-
+        
         // fit the
         animationView!.contentMode = .scaleAspectFit
         view.addSubview(animationView!)
         
         // 4. Set animation loop mode
         animationView!.loopMode = .loop
-
+        
         // Animation speed - Larger number = faste
         animationView!.animationSpeed = 5
-
+        
         //  Play animation
         animationView!.play()
-        
     }
     
-
     @objc func stopAnimations() {
         // ----- Stop Animation
         animationView?.stop()
@@ -112,17 +103,12 @@ extension RestaurantsViewController: SkeletonTableViewDataSource {
         refresh = false
     }
     
-
     func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
         return "RestaurantCell"
     }
-    
 }
 
-// ––––– TableView Functionality –––––
 extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource {
-    
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredRestaurants.count
@@ -142,13 +128,10 @@ extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource 
             cell.stopSkeletonAnimation()
             cell.hideSkeleton()
         }
-        
-        
+
         return cell
     }
     
-    
-    // ––––– TODO: Send restaurant object to DetailViewController
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let cell = sender as! UITableViewCell
         if let indexPath = tableView.indexPath(for: cell) {
@@ -156,20 +139,16 @@ extension RestaurantsViewController: UITableViewDelegate, UITableViewDataSource 
             let detailViewController = segue.destination as! RestaurantDetailViewController
             detailViewController.r = r
         }
-        
     }
-    
 }
 
-
-// ––––– UI SearchBar Functionality –––––
 extension RestaurantsViewController: UISearchBarDelegate {
     
     // Search bar functionality
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText != "" {
             filteredRestaurants = restaurantsArray.filter { (r: Restaurant) -> Bool in
-              return r.name.lowercased().contains(searchText.lowercased())
+                return r.name.lowercased().contains(searchText.lowercased())
             }
         }
         else {
@@ -177,27 +156,43 @@ extension RestaurantsViewController: UISearchBarDelegate {
         }
         tableView.reloadData()
     }
-
     
     // Show Cancel button when typing
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-       self.searchBar.showsCancelButton = true
+        self.searchBar.showsCancelButton = true
     }
-       
+    
     // Logic for searchBar cancel button
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-       searchBar.showsCancelButton = false // remove cancel button
-       searchBar.text = "" // reset search text
-       searchBar.resignFirstResponder() // remove keyboard
-       filteredRestaurants = restaurantsArray // reset results to display
-       tableView.reloadData()
+        searchBar.showsCancelButton = false // remove cancel button
+        searchBar.text = "" // reset search text
+        searchBar.resignFirstResponder() // remove keyboard
+        filteredRestaurants = restaurantsArray // reset results to display
+        tableView.reloadData()
     }
-    
-    
-    
 }
 
-
-
-
-
+extension RestaurantsViewController: CLLocationManagerDelegate {
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            getAPIData(currLocation: location)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Handle failure to get a user’s location
+        if let locationError = error as? CLError {
+            switch locationError.code {
+            case CLError.locationUnknown:
+                print("Location Unknown")
+            case CLError.denied:
+                print("Location denied")
+            default:
+                print("Other Core Location Error")
+            }
+        } else {
+            print("Other Error: \(error.localizedDescription)")
+        }
+    }
+}
