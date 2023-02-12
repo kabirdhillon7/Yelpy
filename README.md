@@ -1,5 +1,5 @@
 # Yelpy
-Yelpy is an iOS app that allows user to browse restaurants from the [Yelp Fusion API](https://fusion.yelp.com).
+Yelpy is an iOS app that allows user to browse restaurants nearby them from the [Yelp Fusion API](https://fusion.yelp.com).
 
 ## Table of Contents
 
