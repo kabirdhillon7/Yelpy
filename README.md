@@ -30,7 +30,8 @@ Some of the main features include:
 
 ## Demo
 ### Current Progress Walkthrough
-<img src="" width=250><br>
+
+<img src="https://user-images.githubusercontent.com/74223402/218288833-f3b4e9a6-3a4b-4426-aae8-3d3838e4f939.gif" width=250><br>
 
 ## Installation
 
