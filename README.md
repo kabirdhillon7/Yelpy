@@ -14,13 +14,17 @@ Yelpy is an iOS app that allows user to browse restaurants nearby them from the 
 ## Description
 
 Some of the main features include:
-- [x] User can view restaurants nearby them using their location.
-- [x] User can tap a cell to see more details about a particular restaurant which also presents the restaurant's address in a MKMapView.
-- [x] User can load past restaurants infinitely using a UIRefreshControl
-- [x] Users can search for restaurants using a search bar
-- [x] Presents an animations using Lottie and Skeleton View when restaurants are loading
-- [x] Users are able to create an account and login to use a Parse backend chat
-- [x] Users are able to take/upload a photo to a restaurant's map pin
+
+- User can login or create a new account, and stay logged in across restarts.
+- User can view a tab bar with a home feed and chat tab
+- Home Feed Tab
+  - User can view restaurants nearby them using their location, and can search for restaurants using the search bar
+  - User can tap a cell to see more details about a particular restaurant which also presents the restaurant's address in a MKMapView.
+    - Users are able to take/upload a photo to a restaurant's map pin
+  - User can load past restaurants infinitely using a UIRefreshControl
+  - Presents an animations using Lottie and Skeleton View when restaurants are loading
+- Chat Tab
+  - User can chat with other app users using a Parse backend chat
 
 ## Requirements
 
